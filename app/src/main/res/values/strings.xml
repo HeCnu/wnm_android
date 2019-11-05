@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ЗАДАЧИ</string>
+    <string name="todo_activity_name">Новая задача</string>
+</resources>
