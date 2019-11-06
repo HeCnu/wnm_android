@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         public void onCompleted(Exception e, JsonArray result) {
                             projects = new ArrayList<>();
                             System.out.println(result);
+                            System.out.println(result);
 
                             for (final JsonElement projectJsonElement : result) {
                                 projects.add(new Gson().fromJson(projectJsonElement, Project.class));
@@ -123,24 +124,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             for (Project project : projects){
                                 projectsList.add(project.getTitle());
                             }
-
-                            //mAdapter = new CustomAdapter_List(mContext, projects);
-
-                            /*
-                            for (Project project: projects) {
-                                mAdapter.addSectionHeaderItem(project.getTitle());
-                                for (Todo todo : project.getTodos()) {
-                                    mAdapter.addItem(todo.getText());
-                                }
-                            }
-
-                            listView = (ListView) findViewById(R.id.listView);
-                            listView.setAdapter(mAdapter);
-
-                            projectsList = new ArrayList<>();
-                            for (Project project : projects){
-                                projectsList.add(project.getTitle());
-                            }*/
                         }
                     });
             return null;

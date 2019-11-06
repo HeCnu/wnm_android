@@ -92,8 +92,10 @@ class CustomAdapter_List extends BaseAdapter {
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        SetTodoIsCompleted setTodoIsCompleted = new SetTodoIsCompleted((Todo)list.get(position), isChecked);
-                        setTodoIsCompleted.execute();
+                        if(((Todo)list.get(position)).getCompleted() != isChecked) {
+                            SetTodoIsCompleted setTodoIsCompleted = new SetTodoIsCompleted((Todo) list.get(position), isChecked);
+                            setTodoIsCompleted.execute();
+                        }
 
                         if(((Todo)list.get(position)).getCompleted() == isChecked && ((Todo)list.get(position)).getCompleted() == true){
                             textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
