@@ -2,7 +2,6 @@ package com.apps.webnmobileapps;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.TreeSet;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -12,12 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -32,9 +28,8 @@ class CustomAdapter_List extends BaseAdapter {
     private LayoutInflater mInflater;
 
     public CustomAdapter_List(Context context, ArrayList<Object> list) {
-
         this.list = list;
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = LayoutInflater.from(context);
     }
 
     @Override
@@ -69,10 +64,10 @@ class CustomAdapter_List extends BaseAdapter {
         if(convertView == null){
             switch (getItemViewType(position)){
                 case TODO_ITEM:
-                    convertView = mInflater.inflate(R.layout.snippet_item1, null);
+                    convertView = mInflater.inflate(R.layout.snippet_item1, parent, false);
                     break;
                 case HEADER:
-                    convertView = mInflater.inflate(R.layout.snippet_item2, null);
+                    convertView = mInflater.inflate(R.layout.snippet_item2, parent, false);
                     break;
             }
         }
@@ -89,6 +84,7 @@ class CustomAdapter_List extends BaseAdapter {
                     textView.setPaintFlags(textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
 
+                /*
                 checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -106,7 +102,24 @@ class CustomAdapter_List extends BaseAdapter {
                         System.out.println(isChecked);
                     }
                 });
+                 */
 
+                checkBox.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if(checkBox.isChecked() == true){
+                            textView.setPaintFlags(textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        }else{
+                            textView.setPaintFlags(textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        }
+                        SetTodoIsCompleted setTodoIsCompleted = new SetTodoIsCompleted((Todo) list.get(position), checkBox.isChecked());
+                        setTodoIsCompleted.execute();
+                        ((Todo)list.get(position)).setCompleted(checkBox.isChecked());
+
+                        System.out.println(checkBox.isChecked());
+                    }
+                });
 
                 break;
             case HEADER:
@@ -117,11 +130,6 @@ class CustomAdapter_List extends BaseAdapter {
         }
         return convertView;
 
-    }
-
-    public static class ViewHolder {
-        public TextView textView;
-        public CheckBox checkBox;
     }
 }
 
@@ -144,25 +152,21 @@ class SetTodoIsCompleted extends AsyncTask<Void, Void, Void>{
         String url = "https://webnmobilestep3.herokuapp.com/todos/" + todo.getIdTodo();
         DefaultHttpClient client = new DefaultHttpClient();
         org.apache.http.client.methods.HttpPatch post = new org.apache.http.client.methods.HttpPatch(url);
-        String response = null;
         JSONObject json = new JSONObject();
         try {
             try {
-                // setup the returned values in case
-                // something goes wrong
+
                 json.put("success", false);
                 json.put("info", "Something went wrong. Retry!");
 
-                // add the users's info to the post params
                 StringEntity se = new StringEntity(todoParams.toString());
                 post.setEntity(se);
 
-                // setup the request headers
                 post.setHeader("Accept", "application/json");
                 post.setHeader("Content-Type", "application/json");
 
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
-                response = client.execute(post, responseHandler);
+                client.execute(post, responseHandler);
 
             } catch (HttpResponseException e) {
                 e.printStackTrace();

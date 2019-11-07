@@ -2,7 +2,6 @@ package com.apps.webnmobileapps;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActionButton btnAdd;
     private ArrayList<String> projectsList;
     private ArrayList<Project> projects;
-    private Context thisContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public class GetDataFromServer extends AsyncTask<Void, Void, Void>{
 
         private Context mContext;
-        private ArrayList<Project> projectsTodoAsynk;
 
         public GetDataFromServer(Context context){
             mContext = context;
@@ -93,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected Void doInBackground(Void... voids) {
 
-            final ArrayList<Project> projectsTodo = new ArrayList<>();
             Ion.with(mContext)
                     .load("https://webnmobilestep3.herokuapp.com/projects.json")
                     .asJsonArray()
